@@ -6,40 +6,45 @@ using UnityEngine.UI;
 public class InputManagerScript : MonoBehaviour
 {
 
-    float hAxis;
-    float vAxis;
-    float htAxis;
-    float vtAxis;
+    public bool Debug = false;
 
-    float ltaxis;
-    float rtaxis;
-    float dhaxis;
-    float dvaxis;
+    //Xbox Input
+    private float hAxis;
+    private float vAxis;
+    private float htAxis;
+    private float vtAxis;
+    private float ltaxis;
+    private float rtaxis;
+    private float dhaxis;
+    private float dvaxis;
+    private bool xbox_a;
+    private bool xbox_b;
+    private bool xbox_x;
+    private bool xbox_y;
+    private bool xbox_lb;
+    private bool xbox_rb;
+    private bool xbox_ls;
+    private bool xbox_rs;
+    private bool xbox_view;
+    private bool xbox_menu;
 
-    bool xbox_a;
-    bool xbox_b;
-    bool xbox_x;
-    bool xbox_y;
-    bool xbox_lb;
-    bool xbox_rb;
-    bool xbox_ls;
-    bool xbox_rs;
-    bool xbox_view;
-    bool xbox_menu;
+    //Vive Input
+    private float vive_leftHorz;
+    private float vive_leftVert;
+    private float vive_rightHorz;
+    private float vive_rightVert;
+    private float vive_leftTrigger;
+    private float vive_rightTrigger;
+    private float vive_leftGrip;
+    private float vive_rightGrip;
 
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
     void Update()
     {
+        ViveInput();
         ControllerInput();
     }
 
-    void ControllerInput()
+    private void ControllerInput()
     {
         hAxis = Input.GetAxis("Horizontal");
         vAxis = Input.GetAxis("Vertical");
@@ -65,12 +70,21 @@ public class InputManagerScript : MonoBehaviour
 
     void ViveInput()
     {
-
+        vive_leftHorz = Input.GetAxis("HTC_VIU_LeftTrackpadHorizontal");
+        vive_leftVert = Input.GetAxis("HTC_VIU_LeftTrackpadVertical");
+        vive_rightHorz = Input.GetAxis("HTC_VIU_RightTrackpadHorizontal");
+        vive_rightVert = Input.GetAxis("HTC_VIU_RightTrackpadVertical");
+        vive_leftTrigger = Input.GetAxis("HTC_VIU_LeftTrigger");
+        vive_rightTrigger = Input.GetAxis("HTC_VIU_RightTrigger");
+        vive_leftGrip = Input.GetAxis("HTC_VIU_LeftGrip");
+        vive_rightGrip = Input.GetAxis("HTC_VIU_RightGrip");
     }
 
     public void OnGUI()
     {
-        string text =
+        if (!Debug) return;
+
+        string textXbox =
             string.Format(
                 "Horizontal: {14:0.000} Vertical: {15:0.000}\n" +
                 "HorizontalTurn: {16:0.000} VerticalTurn: {17:0.000}\n" +
@@ -87,6 +101,18 @@ public class InputManagerScript : MonoBehaviour
                 hAxis, vAxis,
                 htAxis, vtAxis);
 
-        GUI.Label(new Rect(0, 0, 400, 300), text);
+        string textVive =
+            string.Format(
+                "\n\n" +
+                "Left_Horz: {0:0.000}   Right_Horz: {2:0.000}\n" +
+                "Left_Vert: {1:0.000}   Right_Vert: {3:0.000}\n" +
+                "LTrigger: {4:0.000}    RTrigger: {5:0.000}\n" +
+                "Left_Grip: {6:0.000}   Right_Grip: {7:0.000}\n",
+                vive_leftHorz, vive_leftVert, vive_rightHorz,
+                vive_rightVert, vive_leftTrigger, vive_rightTrigger,
+                vive_leftGrip, vive_rightGrip
+                );
+
+        GUI.Label(new Rect(0, 0, 500, 500), textXbox + textVive);
     }
 }
