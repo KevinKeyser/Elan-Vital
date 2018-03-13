@@ -7,6 +7,16 @@ public class InputManagerScript : MonoBehaviour
 {
 
     public bool Debug = false;
+    public Vector2[] LeftTrail { get; private set; }
+    public Vector2[] RightTrail { get; private set; }
+    public bool HasXbox { get; private set; }
+    public bool HasVive { get; private set; }
+
+    // Todo:
+    // Movement
+    // RightTrigger
+    // LeftTrigger
+    // Left & Right Horizontal & Vertical Axis
 
     //Xbox Input
     private float hAxis;
@@ -38,13 +48,37 @@ public class InputManagerScript : MonoBehaviour
     private float vive_leftGrip;
     private float vive_rightGrip;
 
-    void Update()
+    private void Start()
     {
-        ViveInput();
-        ControllerInput();
+        CheckControllers();
     }
 
-    private void ControllerInput()
+    void Update()
+    {
+        CheckControllers();
+        if (HasVive) ReadViveInput();
+        if (HasXbox) ReadXboxInput();
+    }
+
+    private void CheckControllers()
+    {
+        HasXbox = false;
+        HasVive = false;
+        foreach (var name in Input.GetJoystickNames())
+        {
+            if (name.Contains("Xbox One"))
+            {
+                HasXbox = true;
+                continue;
+            }
+            if (name.Contains("Vive"))
+            {
+                HasVive = true;
+            }
+        }
+    }
+
+    private void ReadXboxInput()
     {
         hAxis = Input.GetAxis("Horizontal");
         vAxis = Input.GetAxis("Vertical");
@@ -68,7 +102,7 @@ public class InputManagerScript : MonoBehaviour
         xbox_menu = Input.GetButton("XboxMenu");
     }
 
-    void ViveInput()
+    private void ReadViveInput()
     {
         vive_leftHorz = Input.GetAxis("HTC_VIU_LeftTrackpadHorizontal");
         vive_leftVert = Input.GetAxis("HTC_VIU_LeftTrackpadVertical");
@@ -113,6 +147,16 @@ public class InputManagerScript : MonoBehaviour
                 vive_leftGrip, vive_rightGrip
                 );
 
-        GUI.Label(new Rect(0, 0, 500, 500), textXbox + textVive);
+        string joyNames = "\n";
+        foreach (var name in Input.GetJoystickNames())
+        {
+            joyNames += name + "\n";
+        }
+
+        string boolChecks = "\n";
+        if (HasVive) boolChecks += "HasVive\n";
+        if (HasXbox) boolChecks += "HasXbox\n";
+
+        GUI.Label(new Rect(0, 0, 500, 500), textXbox + textVive + joyNames + boolChecks);
     }
 }
