@@ -22,11 +22,7 @@ public class CircleSplitter : MonoBehaviour
 
     void Start()
     {
-
-        rectTransform = GetComponent<RectTransform>();
         CreateChildren();
-
-
     }
 
     private void CreateChildren()
@@ -39,7 +35,6 @@ public class CircleSplitter : MonoBehaviour
         children = new GameObject[splitAmount];
         for (int i = 0; i < splitAmount; i++)
         {
-
             float x = Mathf.Cos(currentTriangleDeg * Mathf.Deg2Rad) * radius;
             float y = Mathf.Sin(currentTriangleDeg * Mathf.Deg2Rad) * radius;
             Vector2 direction = new Vector2(x, y);
