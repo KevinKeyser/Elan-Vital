@@ -3,46 +3,74 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InputManagerScript : MonoBehaviour {
+public class InputManagerScript : MonoBehaviour
+{
 
-    public Text DebugText;
+    float hAxis;
+    float vAxis;
+    float htAxis;
+    float vtAxis;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    float ltaxis;
+    float rtaxis;
+    float dhaxis;
+    float dvaxis;
 
-    void ControllerCheck()
+    bool xbox_a;
+    bool xbox_b;
+    bool xbox_x;
+    bool xbox_y;
+    bool xbox_lb;
+    bool xbox_rb;
+    bool xbox_ls;
+    bool xbox_rs;
+    bool xbox_view;
+    bool xbox_menu;
+
+    // Use this for initialization
+    void Start()
     {
 
-        float hAxis = Input.GetAxis("Horizontal");
-        float vAxis = Input.GetAxis("Vertical");
-        float aAxis = Input.GetAxis("Altitude");
-        float htAxis = Input.GetAxis("HorizontalTurn");
-        float vtAxis = Input.GetAxis("VerticalTurn");
+    }
 
-        float ltaxis = Input.GetAxis("XboxLeftTrigger");
-        float rtaxis = Input.GetAxis("XboxRightTrigger");
-        float dhaxis = Input.GetAxis("XboxDpadHorizontal");
-        float dvaxis = Input.GetAxis("XboxDpadVertical");
+    // Update is called once per frame
+    void Update()
+    {
+        ControllerInput();
+    }
 
-        bool xbox_a = Input.GetButton("XboxA");
-        bool xbox_b = Input.GetButton("XboxB");
-        bool xbox_x = Input.GetButton("XboxX");
-        bool xbox_y = Input.GetButton("XboxY");
-        bool xbox_lb = Input.GetButton("XboxLB");
-        bool xbox_rb = Input.GetButton("XboxRB");
-        bool xbox_ls = Input.GetButton("XboxLS");
-        bool xbox_rs = Input.GetButton("XboxRS");
-        bool xbox_view = Input.GetButton("XboxView");
-        bool xbox_menu = Input.GetButton("XboxMenu");
-        
-        DebugText.text =
+    void ControllerInput()
+    {
+        hAxis = Input.GetAxis("Horizontal");
+        vAxis = Input.GetAxis("Vertical");
+        htAxis = Input.GetAxis("HorizontalTurn");
+        vtAxis = Input.GetAxis("VerticalTurn");
+
+        ltaxis = Input.GetAxis("XboxLeftTrigger");
+        rtaxis = Input.GetAxis("XboxRightTrigger");
+        dhaxis = Input.GetAxis("XboxDpadHorizontal");
+        dvaxis = Input.GetAxis("XboxDpadVertical");
+
+        xbox_a = Input.GetButton("XboxA");
+        xbox_b = Input.GetButton("XboxB");
+        xbox_x = Input.GetButton("XboxX");
+        xbox_y = Input.GetButton("XboxY");
+        xbox_lb = Input.GetButton("XboxLB");
+        xbox_rb = Input.GetButton("XboxRB");
+        xbox_ls = Input.GetButton("XboxLS");
+        xbox_rs = Input.GetButton("XboxRS");
+        xbox_view = Input.GetButton("XboxView");
+        xbox_menu = Input.GetButton("XboxMenu");
+    }
+
+    void ViveInput()
+    {
+
+    }
+
+    public void OnGUI()
+    {
+        string text =
             string.Format(
                 "Horizontal: {14:0.000} Vertical: {15:0.000}\n" +
                 "HorizontalTurn: {16:0.000} VerticalTurn: {17:0.000}\n" +
@@ -58,10 +86,7 @@ public class InputManagerScript : MonoBehaviour {
                 dhaxis, dvaxis,
                 hAxis, vAxis,
                 htAxis, vtAxis);
-    }
 
-    public void OnGUI()
-    {
-        GUI.Label(new Rect(0, 0, 400, 25), "asdasd");
+        GUI.Label(new Rect(0, 0, 400, 300), text);
     }
 }

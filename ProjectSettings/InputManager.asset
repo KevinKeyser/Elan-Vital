@@ -198,8 +198,8 @@ InputManager:
     axis: 0
     joyNum: 0
   - serializedVersion: 3
-    m_Name: XboxLeftBumper
-    descriptiveName: 
+    m_Name: XboxLB
+    descriptiveName: XboxLeftBumper
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick button 4
@@ -214,8 +214,8 @@ InputManager:
     axis: 0
     joyNum: 0
   - serializedVersion: 3
-    m_Name: XboxRightBumper
-    descriptiveName: 
+    m_Name: XboxRB
+    descriptiveName: XboxRightBumper
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick button 5
@@ -262,8 +262,8 @@ InputManager:
     axis: 0
     joyNum: 0
   - serializedVersion: 3
-    m_Name: XboxLeftStickButton
-    descriptiveName: 
+    m_Name: XboxLS
+    descriptiveName: XboxLeftStickButton
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick button 8
@@ -278,8 +278,8 @@ InputManager:
     axis: 0
     joyNum: 0
   - serializedVersion: 3
-    m_Name: XboxRightStickButton
-    descriptiveName: 
+    m_Name: XboxRS
+    descriptiveName: XboxRightStickButton
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick button 9
