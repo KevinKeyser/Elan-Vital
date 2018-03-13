@@ -5,8 +5,21 @@ using UnityEngine;
 public class Bone : MonoBehaviour {
 
     public float Length;
+    public float MaxLength
+    {
+        get{
+            float maxLength = Length;
+            if(ChildBones.Count > 0)
+            {
+                maxLength += ChildBones[0].MaxLength;
+            }
+            return maxLength;
+        }
+    }
 
     public Transform Target;
+
+    private Rigidbody rb;
 
     private List<Bone> childBones;
 
@@ -20,11 +33,11 @@ public class Bone : MonoBehaviour {
                 for (int index = 0; index < transform.childCount; index++)
                 {
                     Bone childBone = transform.GetChild(index).GetComponent<Bone>();
-                    childBone.Target = Target;
                     if(childBone != null)
                     {
+                        //childBone.Target = Target;
                         childBones.Add(childBone);
-                        childBones.AddRange(childBone.childBones);
+                        childBones.AddRange(childBone.ChildBones);
                         break;
                     }
                 }
