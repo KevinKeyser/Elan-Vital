@@ -6,17 +6,23 @@ using UnityEngine.UI;
 public class InputManagerScript : MonoBehaviour
 {
 
+    //Get Controller locations from object
+    // LeftLocation
+    // RightLocation
+
+
     public bool Debug = false;
     public Vector2[] LeftTrail { get; private set; }
     public Vector2[] RightTrail { get; private set; }
     public bool HasXbox { get; private set; }
     public bool HasVive { get; private set; }
 
-    // Todo:
-    // Movement
-    // RightTrigger
-    // LeftTrigger
-    // Left & Right Horizontal & Vertical Axis
+    public float LeftTrigger { get; private set; }
+    public float RightTrigger { get; private set; }
+    public float LeftHorizontal { get; private set; }
+    public float RightHorizontal { get; private set; }
+    public float LeftVertical { get; private set; }
+    public float RightVertical { get; private set; }
 
     //Xbox Input
     private float hAxis;
