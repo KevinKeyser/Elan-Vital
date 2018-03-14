@@ -9,7 +9,8 @@ public class ComboSystemController : MonoBehaviour
     private CombatWheel wheel;
     [SerializeField]
     private UILineRenderer lineRenderer;
-
+    [SerializeField]
+    private InputManager inputManager;
     public Stack<int> traveledSections = new Stack<int>();
     //depth
     [SerializeField]
@@ -17,8 +18,7 @@ public class ComboSystemController : MonoBehaviour
     private int lastSection = -1;
 
     void Update () {
-		//get point from inputmanager
-	    Vector3 tempInput = Vector3.zero;
+	    Vector3 tempInput = inputManager.RightPosition;
 	    Vector2 currentPoint = new Vector2(tempInput.x, tempInput.y);
         if (lineRenderer)
         {
