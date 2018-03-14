@@ -72,11 +72,11 @@ public class InputManagerScript : MonoBehaviour
         {
             if (HasVive)
             {
-                return leftController.position;
+                return leftController.localPosition;
             }
             else if (HasXbox && left_mode == XboxMode.Track)
             {
-                return simulatorLeft.position;
+                return simulatorLeft.localPosition;
             }
             return Vector3.zero;
         }
@@ -87,15 +87,18 @@ public class InputManagerScript : MonoBehaviour
         {
             if (HasVive)
             {
-                return rightController.position;
+                return rightController.localPosition;
             }
             else if (HasXbox && right_mode == XboxMode.Track)
             {
-                return simulatorRight.position;
+                return simulatorRight.localPosition;
             }
             return Vector3.zero;
         }
     }
+
+    public Transform LeftTransform => leftController.transform;
+    public Transform RightTransform => rightController.transform;
 
     public Vector3 PreviousLeftPosition { get; private set; }
     public Vector3 PreviousRightPosition { get; private set; }
@@ -141,24 +144,9 @@ public class InputManagerScript : MonoBehaviour
             {
                 return vive_leftHorz;
             }
-            else if (HasXbox)
+            else if (HasXbox && left_mode == XboxMode.Pad)
             {
                 return xbox_leftHorz;
-            }
-            return 0;
-        }
-    }
-    public float RightHorizontal
-    {
-        get
-        {
-            if (HasVive)
-            {
-                return vive_rightHorz;
-            }
-            else if (HasXbox)
-            {
-                return xbox_rightHorz;
             }
             return 0;
         }
@@ -171,9 +159,24 @@ public class InputManagerScript : MonoBehaviour
             {
                 return vive_leftVert;
             }
-            else if (HasXbox)
+            else if (HasXbox && left_mode == XboxMode.Pad)
             {
                 return xbox_leftVert;
+            }
+            return 0;
+        }
+    }
+    public float RightHorizontal
+    {
+        get
+        {
+            if (HasVive)
+            {
+                return vive_rightHorz;
+            }
+            else if (HasXbox && right_mode == XboxMode.Pad)
+            {
+                return xbox_rightHorz;
             }
             return 0;
         }
@@ -186,11 +189,34 @@ public class InputManagerScript : MonoBehaviour
             {
                 return vive_rightHorz;
             }
-            else if (HasXbox)
+            else if (HasXbox && right_mode == XboxMode.Pad)
             {
                 return xbox_rightVert;
             }
             return 0;
+        }
+    }
+
+    public Vector2 LeftJoy
+    {
+        get
+        {
+            if (HasXbox && left_mode == XboxMode.Raw)
+            {
+                return new Vector2(xbox_leftHorz, xbox_leftVert);
+            }
+            return Vector2.zero;
+        }
+    }
+    public Vector2 RightJoy
+    {
+        get
+        {
+            if (HasXbox && right_mode == XboxMode.Raw)
+            {
+                return new Vector2(xbox_rightHorz, xbox_rightVert);
+            }
+            return Vector2.zero;
         }
     }
 
@@ -211,21 +237,59 @@ public class InputManagerScript : MonoBehaviour
 
     void Update()
     {
+        PreviousLeftPosition = LeftPosition;
+        PreviousRightPosition = RightPosition;
+
+        bool pre_xbox_leftStick = xbox_leftStick;
+        bool pre_xbox_rightStick = xbox_rightStick;
+
         CheckControllers();
         if (HasVive) ReadViveInput();
         if (HasXbox)
         {
             ReadXboxInput();
             //test for range of movement with vive controllers
-            //click to change xbox mode
             //move & show points if mode in track
-        }
-    }
 
-    private void LateUpdate()
-    {
-        PreviousLeftPosition = LeftPosition;
-        PreviousRightPosition = RightPosition;
+            if (xbox_rightStick && !pre_xbox_rightStick)
+            {
+                switch (right_mode)
+                {
+                    case XboxMode.Pad:
+                        right_mode = XboxMode.Track;
+                        break;
+                    case XboxMode.Track:
+                        right_mode = XboxMode.Raw;
+                        break;
+                    case XboxMode.Raw:
+                        right_mode = XboxMode.Pad;
+                        break;
+                    default:
+                        right_mode = XboxMode.Pad;
+                        break;
+                }
+            }
+
+            if (xbox_leftStick && !pre_xbox_leftStick)
+            {
+                switch (left_mode)
+                {
+                    case XboxMode.Pad:
+                        left_mode = XboxMode.Track;
+                        break;
+                    case XboxMode.Track:
+                        left_mode = XboxMode.Raw;
+                        break;
+                    case XboxMode.Raw:
+                        left_mode = XboxMode.Pad;
+                        break;
+                    default:
+                        left_mode = XboxMode.Pad;
+                        break;
+                }
+            }
+
+        }
     }
 
     private void CheckControllers()
@@ -286,47 +350,41 @@ public class InputManagerScript : MonoBehaviour
     {
         if (!Debug) return;
 
-        string textXbox =
-            string.Format(
-                "Horizontal: {14:0.000} Vertical: {15:0.000}\n" +
-                "HorizontalTurn: {16:0.000} VerticalTurn: {17:0.000}\n" +
-                "LTrigger: {0:0.000} RTrigger: {1:0.000}\n" +
-                "A: {2} B: {3} X: {4} Y:{5}\n" +
-                "LB: {6} RB: {7} LS: {8} RS:{9}\n" +
-                "View: {10} Menu: {11}\n" +
-                "Dpad-H: {12:0.000} Dpad-V: {13:0.000}\n",
-                xbox_leftTrigger, xbox_rightTrigger,
-                xbox_a, xbox_b, xbox_x, xbox_y,
-                xbox_leftBumper, xbox_rightBumper, xbox_leftStick, xbox_rightStick,
-                xbox_view, xbox_menu,
-                xbox_dpadHorz, xbox_dpadVert,
-                xbox_leftHorz, xbox_leftVert,
-                xbox_rightHorz, xbox_rightVert);
-
-        string textVive =
-            string.Format(
-                "\n\n" +
-                "Left_Horz: {0:0.000}   Right_Horz: {2:0.000}\n" +
-                "Left_Vert: {1:0.000}   Right_Vert: {3:0.000}\n" +
-                "LTrigger: {4:0.000}    RTrigger: {5:0.000}\n" +
-                "Left_Grip: {6:0.000}   Right_Grip: {7:0.000}\n",
-                vive_leftHorz, vive_leftVert, vive_rightHorz,
-                vive_rightVert, vive_leftTrigger, vive_rightTrigger,
-                vive_leftGrip, vive_rightGrip
-                );
-
-        string joyNames = "\n";
+        string joyNames = "";
         foreach (var name in Input.GetJoystickNames())
         {
             joyNames += name + "\n";
         }
 
-        string boolChecks = "\n";
+        string boolChecks = "";
         if (HasVive) boolChecks += "HasVive\n";
-        if (HasXbox) boolChecks += "HasXbox\n";
 
-        string controllerPositions = $"\nLeft: {LeftPosition}, Right: {RightPosition}";
+        string mode = "";
+        if (HasXbox)
+        {
+            boolChecks += "HasXbox\n";
+            mode += $"LeftMode: {left_mode}, RightMode: {right_mode}\n";
+            if (left_mode == XboxMode.Raw)
+            {
+                mode += $" LeftJoy: {LeftJoy}";
+            }
+            if (right_mode == XboxMode.Raw)
+            {
+                mode += $" RighJoy: {RightJoy}";
+            }
+            mode += "\n";
+        }
 
-        GUI.Label(new Rect(0, 0, 500, 500), textXbox + textVive + joyNames + boolChecks + controllerPositions);
+        string genericInputs =
+            $"\nLeftPos: {LeftPosition}, RightPos: {RightPosition}" +
+            $"\nLeftTrig: {LeftTrigger}, RightTrig: {RightTrigger}" +
+            $"\nLeftHorz: {LeftHorizontal}, RightHorz: {RightHorizontal}" +
+            $"\nLeftVert: {LeftVertical}, RightVert: {RightVertical}";
+
+
+
+
+        GUI.Label(new Rect(0, 0, 500, 500), joyNames + boolChecks + mode + genericInputs);
     }
+
 }

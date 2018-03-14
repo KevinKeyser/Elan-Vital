@@ -418,9 +418,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a4e3c6a5ebfe7d4eaa264462f512073, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Debug: 1
-  LeftController: {fileID: 1625474448}
-  RightController: {fileID: 1706341410}
+  Debug: 0
+  leftController: {fileID: 1625474448}
+  rightController: {fileID: 1706341410}
   simulatorLeft: {fileID: 1953910934}
   simulatorRight: {fileID: 11573040}
   viveTrackers: {fileID: 1372064126}
