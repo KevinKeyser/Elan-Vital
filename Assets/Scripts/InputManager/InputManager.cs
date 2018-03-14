@@ -57,17 +57,7 @@ public class InputManager : MonoBehaviour
     [SerializeField]
     private Transform rightController;
     [SerializeField]
-    private Transform simulatorLeft;
-    [SerializeField]
-    private Transform simulatorRight;
-    [SerializeField]
-    private GameObject viveTrackers;
-    [SerializeField]
-    private GameObject viveControllers;
-    [SerializeField]
     private GameObject mainCamera;
-    [SerializeField]
-    private GameObject backupCamera;
     #endregion
 
     public Transform Player;
@@ -81,12 +71,12 @@ public class InputManager : MonoBehaviour
                 Vector3 local;
                 if (Player)
                 {
-                    local = -leftController.InverseTransformPoint(Player.position);
+                    local = Player.InverseTransformPoint(leftController.transform.position);
                     local.Normalize();
                     return local;
                 }
 
-                local = -leftController.InverseTransformPoint(mainCamera.transform.position);
+                local = mainCamera.transform.InverseTransformPoint(leftController.transform.position);
                 local.Normalize();
                 return local;
             }
@@ -106,12 +96,11 @@ public class InputManager : MonoBehaviour
                 Vector3 local;
                 if (Player)
                 {
-                    local = -rightController.InverseTransformPoint(Player.position);
+                    local = Player.InverseTransformPoint(leftController.transform.position);
                     local.Normalize();
                     return local;
                 }
-
-                local = -rightController.InverseTransformPoint(mainCamera.transform.position);
+                local = mainCamera.transform.InverseTransformPoint(leftController.transform.position);
                 local.Normalize();
                 return local;
             }
@@ -255,10 +244,6 @@ public class InputManager : MonoBehaviour
         CheckControllers();
         if (!HasVive)
         {
-            viveTrackers.SetActive(false);
-            viveControllers.SetActive(false);
-            mainCamera.SetActive(false);
-            backupCamera.SetActive(true);
             Debug = true;
         }
     }
@@ -314,18 +299,9 @@ public class InputManager : MonoBehaviour
                         break;
                 }
             }
-
-            if (left_mode == XboxMode.Track)
-            {
-                simulatorLeft.localPosition = new Vector3(xbox_leftHorz, xbox_leftVert, 0) * scale;
-            }
-            if (right_mode == XboxMode.Track)
-            {
-                simulatorRight.localPosition = new Vector3(xbox_rightHorz, xbox_rightVert, 0) * scale;
-            }
         }
 
-        if (DebugText)
+        if (Debug && DebugText)
         {
             DebugText.text = DebugString();
         }
@@ -340,9 +316,8 @@ public class InputManager : MonoBehaviour
             if (name.Contains("Xbox One"))
             {
                 HasXbox = true;
-                continue;
             }
-            if (name.Contains("Vive"))
+            else if (name.Contains("Vive"))
             {
                 HasVive = true;
             }
