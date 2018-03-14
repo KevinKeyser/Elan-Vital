@@ -10,9 +10,24 @@ namespace ElanVital.UI
 {
     public class UILineRenderer : Graphic
     {
+        [Range(10, 250)]
+        [SerializeField] public int MaxPoints = 100;
+
         public float LineThickness = 1;
-        public List<Vector2> Points = new List<Vector2>();
+        [SerializeField]
+        private List<Vector2> points = new List<Vector2>();
         private Vector2[] verts = new Vector2[0];
+
+
+        public void AddPoint(Vector2 point)
+        {
+            points.Add(point);
+            if (points.Count > MaxPoints)
+            {
+                points.RemoveAt(0);
+            } 
+            SetVerticesDirty();
+        }
 
         protected override void OnValidate()
         {
@@ -23,23 +38,23 @@ namespace ElanVital.UI
         protected override void OnPopulateMesh(VertexHelper vh)
         {
             vh.Clear();
-            if (Points.Count < 2)
+            if (points.Count < 2)
                 return;
 
-            verts = new Vector2[Points.Count * 2];
+            verts = new Vector2[points.Count * 2];
 
             UIVertex vert = UIVertex.simpleVert;
             vert.color = color;
 
             Vector2 lastNormal = Vector2.zero;
-            for (int i = 0; i < Points.Count; i++)
+            for (int i = 0; i < points.Count; i++)
             {
-                Vector2 v1 = Points[i];
+                Vector2 v1 = points[i];
                 Vector2 direction = lastNormal;
 
-                if (i != Points.Count - 1) //Find normal average with next point in line
+                if (i != points.Count - 1) //Find normal average with next point in line
                 {
-                    Vector2 v2 = Points[i + 1];
+                    Vector2 v2 = points[i + 1];
                     Vector2 vDif = v2 - v1;
 
                     direction = (vDif.normalized + lastNormal) / 2;
@@ -63,7 +78,7 @@ namespace ElanVital.UI
                 vh.AddVert(vert);
             }
 
-            for (int i = 0; i < Points.Count - 1; i++)
+            for (int i = 0; i < points.Count - 1; i++)
             {
                 int index = i * 2;
                 vh.AddTriangle(index, index + 1, index + 3);

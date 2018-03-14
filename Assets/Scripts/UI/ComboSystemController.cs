@@ -5,24 +5,24 @@ using UnityEngine;
 
 public class ComboSystemController : MonoBehaviour
 {
-    [SerializeField]
-    private CombatWheel wheel;
-    [SerializeField]
-    private UILineRenderer lineRenderer;
-    [SerializeField]
-    private InputManager inputManager;
-    public Stack<int> traveledSections = new Stack<int>();
+    [Range(1, 100)] [SerializeField] private int MaxTraveledSections = 100;
+
+    [SerializeField] private CombatWheel wheel;
+    [SerializeField] private UILineRenderer lineRenderer;
+    [SerializeField] private InputManager inputManager;
+
+    public List<int> traveledSections = new List<int>();
+
     //depth
-    [SerializeField]
-    private List<Color> ComboColors = new List<Color>();
+    [SerializeField] private List<Color> ComboColors = new List<Color>();
     private int lastSection = -1;
 
     void Update () {
-	    Vector3 tempInput = inputManager.RightPosition;
+	    Vector3 tempInput = inputManager.RightPosition * (wheel.Radius + wheel.InnerPadding + wheel.Thickness - 1);
 	    Vector2 currentPoint = new Vector2(tempInput.x, tempInput.y);
         if (lineRenderer)
         {
-            lineRenderer.Points.Add(currentPoint);
+            lineRenderer.AddPoint(currentPoint);
         }
 
         if (wheel)
@@ -32,13 +32,17 @@ public class ComboSystemController : MonoBehaviour
             {
                 if (lastSection != currentSection)
                 {
-                    traveledSections.Push(currentSection);
+                    traveledSections.Add(currentSection);
 
                 }
             }
             lastSection = currentSection;
-        } 
+        }
 
 
+        while (traveledSections.Count > MaxTraveledSections)
+        {
+            traveledSections.RemoveAt(0);
+        }
 	}
 }

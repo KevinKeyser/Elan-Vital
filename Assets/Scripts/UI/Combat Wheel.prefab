@@ -85,10 +85,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57b9a95975110a64c9ff805a9041f911, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxTraveledSections: 100
   wheel: {fileID: 114162193422723824}
   lineRenderer: {fileID: 114885690286678814}
   inputManager: {fileID: 0}
-  ComboColors: []
+  traveledSections: 
+  ComboColors:
+  - {r: 0.68235296, g: 0.68235296, b: 0.68235296, a: 0.68235296}
+  - {r: 1, g: 0.98232317, b: 0.48627448, a: 1}
+  - {r: 1, g: 0.7605779, b: 0.48627448, a: 1}
+  - {r: 1, g: 0.48584908, b: 0.48584908, a: 1}
+  - {r: 1, g: 0.48627448, b: 0.7391169, a: 1}
+  - {r: 1, g: 0.48584908, b: 0.48584908, a: 1}
+  - {r: 0.71966255, g: 0.4669811, b: 1, a: 1}
+  - {r: 0.48627448, g: 0.7660194, b: 1, a: 1}
+  - {r: 0.48627448, g: 1, b: 0.7846696, a: 1}
+  - {r: 0.6104483, g: 1, b: 0.48627448, a: 1}
+  - {r: 1, g: 0.8706498, b: 0, a: 1}
+  - {r: 1, g: 0.4699814, b: 0, a: 1}
+  - {r: 1, g: 0, b: 0, a: 1}
+  - {r: 1, g: 0, b: 0.7197385, a: 1}
 --- !u!114 &114885690286678814
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -103,6 +119,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  MaxPoints: 100
   LineThickness: 1
   Points: []
 --- !u!222 &222423844548231684
