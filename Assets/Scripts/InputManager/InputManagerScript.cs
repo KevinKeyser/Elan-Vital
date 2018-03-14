@@ -14,6 +14,8 @@ public class InputManagerScript : MonoBehaviour
 
     public bool Debug = false;
 
+    private const int scale = 250;
+
     #region Xbox_Fields
     private float xbox_leftHorz;
     private float xbox_leftVert;
@@ -66,6 +68,10 @@ public class InputManagerScript : MonoBehaviour
     [SerializeField]
     private GameObject backupCamera;
 
+    // Do the local positions move if the controller is held still and the head moves?
+    //x: (-1,0)
+    //y: (0, 2)
+    //z: (0, 1)
     public Vector3 LeftPosition
     {
         get
@@ -76,7 +82,10 @@ public class InputManagerScript : MonoBehaviour
             }
             else if (HasXbox && left_mode == XboxMode.Track)
             {
-                return simulatorLeft.localPosition;
+                //map xbox raw to tested vive ranges
+                float x = Map(xbox_leftHorz, -1, 1, -1, 0);
+                float y = Map(xbox_leftVert, -1, 1, 0, 2);
+                return new Vector3(x, y, 0);
             }
             return Vector3.zero;
         }
@@ -91,7 +100,10 @@ public class InputManagerScript : MonoBehaviour
             }
             else if (HasXbox && right_mode == XboxMode.Track)
             {
-                return simulatorRight.localPosition;
+                //map xbox raw to tested vive ranges
+                float x = Map(xbox_rightHorz, -1, 1, -1, 0);
+                float y = Map(xbox_rightVert, -1, 1, 0, 2);
+                return new Vector3(x, y, 0);
             }
             return Vector3.zero;
         }
@@ -248,8 +260,6 @@ public class InputManagerScript : MonoBehaviour
         if (HasXbox)
         {
             ReadXboxInput();
-            //test for range of movement with vive controllers
-            //move & show points if mode in track
 
             if (xbox_rightStick && !pre_xbox_rightStick)
             {
@@ -289,6 +299,14 @@ public class InputManagerScript : MonoBehaviour
                 }
             }
 
+            if (left_mode == XboxMode.Track)
+            {
+                simulatorLeft.localPosition = new Vector3(xbox_leftHorz, xbox_leftVert, 0) * scale;
+            }
+            if (right_mode == XboxMode.Track)
+            {
+                simulatorRight.localPosition = new Vector3(xbox_rightHorz, xbox_rightVert, 0) * scale;
+            }
         }
     }
 
@@ -313,9 +331,9 @@ public class InputManagerScript : MonoBehaviour
     private void ReadXboxInput()
     {
         xbox_leftHorz = Input.GetAxis("Horizontal");
-        xbox_leftVert = Input.GetAxis("Vertical");
+        xbox_leftVert = -Input.GetAxis("Vertical"); // hotfix: inverted?
         xbox_rightHorz = Input.GetAxis("HorizontalTurn");
-        xbox_rightVert = Input.GetAxis("VerticalTurn");
+        xbox_rightVert = -Input.GetAxis("VerticalTurn"); // hotfix: inverted?
 
         xbox_leftTrigger = Input.GetAxis("XboxLeftTrigger");
         xbox_rightTrigger = Input.GetAxis("XboxRightTrigger");
@@ -370,7 +388,7 @@ public class InputManagerScript : MonoBehaviour
             }
             if (right_mode == XboxMode.Raw)
             {
-                mode += $" RighJoy: {RightJoy}";
+                mode += $" RightJoy: {RightJoy}";
             }
             mode += "\n";
         }
@@ -385,6 +403,15 @@ public class InputManagerScript : MonoBehaviour
 
 
         GUI.Label(new Rect(0, 0, 500, 500), joyNames + boolChecks + mode + genericInputs);
+    }
+
+    private float Map(float value, float oldMin, float oldMax, float newMin, float newMax)
+    {
+        float oldRange = (oldMax - oldMin);
+        float newRange = (newMax - newMin);
+        float newValue = (((value - oldMin) * newRange) / oldRange) + newMin;
+
+        return (newValue);
     }
 
 }
