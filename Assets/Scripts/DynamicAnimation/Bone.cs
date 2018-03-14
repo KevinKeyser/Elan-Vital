@@ -6,6 +6,8 @@ namespace ElanVital.DynamicAnimation
 {
     public class Bone : MonoBehaviour
     {
+        public Quaternion OffsetRotation;
+        public Vector3 euler;
 
         public float Length;
         [SerializeField] private float maxLength;
@@ -62,9 +64,12 @@ namespace ElanVital.DynamicAnimation
         // Use this for initialization
         void Start()
         {
+            OffsetRotation = transform.rotation;
             if (ChildBones.Count > 0)
             {
                 Length = Vector3.Distance(transform.position, ChildBones[0].transform.position);
+                OffsetRotation = transform.rotation;
+                euler = OffsetRotation.eulerAngles;
             }
             else
             {
