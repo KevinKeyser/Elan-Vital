@@ -7,7 +7,7 @@ namespace ElanVital.DynamicAnimation
     public class Chain : Bone
     {
 
-        public float Tolerance = 0.01f;
+        public float Tolerance = 0.25f;
 
 
         public void ForwardKinematics()
@@ -108,6 +108,7 @@ namespace ElanVital.DynamicAnimation
                 else
                 {
                     ChildBones[index].transform.LookAt(finalPositions[index + 1]);
+                    ChildBones[index + 1].transform.position = finalPositions[index + 1];
                     //     ChildBones[index].transform.LookAt(ChildBones[index + 1].transform);
                 }
 

@@ -54,6 +54,10 @@ namespace ElanVital.DynamicAnimation
             }
         }
 
+        void Awake()
+        {
+            childBones = null;
+        }
 
         // Use this for initialization
         void Start()
