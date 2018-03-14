@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,7 +8,7 @@ using UnityEngine.UI;
 
 namespace ElanVital.UI
 {
-    public class CombatWheel : MaskableGraphic
+    public class CombatWheel : Graphic
     {
         [Range(-360, 360)] public float DegreeOffset = 0;
         [Range(1, 100)] public int Radius = 10;
@@ -20,32 +21,65 @@ namespace ElanVital.UI
         [Range(1, 10)]
         private int SectionCount = 1;
         [SerializeField]
-        private Color[] SectionColors;
+        private Color[] sectionColors;
+
+
 
         public void SetSectionColor(int sectionNumber, Color newColor)
         {
-            SectionColors[sectionNumber] = newColor;
+            sectionColors[sectionNumber] = newColor;
         }
-            
+
+        public int SectionContains(Vector2 point)
+        {
+
+            float distance = point.magnitude;
+            //in center circle
+            if (distance <= Radius)
+            {
+                return 0;
+            }
+            //isnt in section
+            //Its inbetwwen inner circle and outer ring
+            if (distance < Radius + InnerPadding)
+            {
+                return -1;
+            }
+
+            float degreesPerSection = 360f / SectionCount;
+            float currentDegree = DegreeOffset - degreesPerSection / 2;
+            float pointDegree = Mathf.Atan2(point.y, point.x) * Mathf.Rad2Deg;
+            for (int currentSection = 0; currentSection < SectionCount; currentSection++)
+            {
+                if (pointDegree >= currentDegree && pointDegree <= currentDegree + degreesPerSection)
+                {
+                    return currentSection + 1;
+                }
+            }
+
+            return -1;
+        }
+
         protected override void Awake()
         {
-            Canvas.willRenderCanvases += () => {
+            Canvas.willRenderCanvases += () =>
+            {
                 rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, (Radius + Thickness + InnerPadding) * 2);
                 rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (Radius + Thickness + InnerPadding) * 2);
             };
-            SectionColors = new Color[SectionCount + 1];
-            for (int i = 0; i < SectionColors.Length; i++)
+            sectionColors = new Color[SectionCount + 1];
+            for (int i = 0; i < sectionColors.Length; i++)
             {
-                SectionColors[i] = this.color;
+                sectionColors[i] = this.color;
             }
             base.Awake();
         }
-       
+
 
         protected override void OnPopulateMesh(VertexHelper vh)
         {
             vh.Clear();
-            //SectionColors = new Color[SectionCount];
+            //sectionColors = new Color[SectionCount];
             float perSectionDegree = (360f - Padding * SectionCount) / SectionCount;
 
             //float degreeIncrease = 360f / Detail;
@@ -63,10 +97,10 @@ namespace ElanVital.UI
                     x = Mathf.Cos((DegreeOffset + currentSectionDegree + currentDegree) * Mathf.Deg2Rad);
                     y = Mathf.Sin((DegreeOffset + currentSectionDegree + currentDegree) * Mathf.Deg2Rad);
                     vert.position = new Vector2(x, y) * (Radius + InnerPadding);
-                    vert.color = SectionColors[sectionNumber + 1];
+                    vert.color = sectionColors[sectionNumber + 1];
                     vh.AddVert(vert);
                     vert.position = new Vector2(x, y) * (Radius + InnerPadding + Thickness);
-                    vert.color = SectionColors[sectionNumber + 1];
+                    vert.color = sectionColors[sectionNumber + 1];
                     vh.AddVert(vert);
                     currentSectionDegree += sectionDegreeIncrease;
                 }
@@ -75,10 +109,10 @@ namespace ElanVital.UI
                 x = Mathf.Cos((DegreeOffset + currentDegree + perSectionDegree) * Mathf.Deg2Rad);
                 y = Mathf.Sin((DegreeOffset + currentDegree + perSectionDegree) * Mathf.Deg2Rad);
                 vert.position = new Vector2(x, y) * (Radius + InnerPadding);
-                vert.color = SectionColors[sectionNumber + 1];
+                vert.color = sectionColors[sectionNumber + 1];
                 vh.AddVert(vert);
                 vert.position = new Vector2(x, y) * (Radius + InnerPadding + Thickness);
-                vert.color = SectionColors[sectionNumber + 1];
+                vert.color = sectionColors[sectionNumber + 1];
                 vh.AddVert(vert);
 
                 for (int i = sectionNumber * Detail; i < (sectionNumber + 1) * Detail - 1; i++)
@@ -92,7 +126,7 @@ namespace ElanVital.UI
             }
 
             int outerSectionVertEnd = vh.currentVertCount;
-            vert.color = SectionColors[0];
+            vert.color = sectionColors[0];
             vert.position = Vector2.zero;
             vh.AddVert(vert);
             currentDegree = 0f;
