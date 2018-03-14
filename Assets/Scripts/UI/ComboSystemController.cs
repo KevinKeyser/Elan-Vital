@@ -35,8 +35,8 @@ public class ComboSystemController : MonoBehaviour
                     traveledSections.Add(currentSection);
 
                 }
+                lastSection = currentSection;
             }
-            lastSection = currentSection;
         }
 
 

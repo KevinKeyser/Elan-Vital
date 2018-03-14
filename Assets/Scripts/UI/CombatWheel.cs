@@ -49,12 +49,27 @@ namespace ElanVital.UI
             float degreesPerSection = 360f / SectionCount;
             float currentDegree = DegreeOffset - degreesPerSection / 2;
             float pointDegree = Mathf.Atan2(point.y, point.x) * Mathf.Rad2Deg;
+            if (pointDegree < 0)
+            {
+                pointDegree += 360;
+            }
+            Debug.Log(pointDegree);
             for (int currentSection = 0; currentSection < SectionCount; currentSection++)
             {
+                if (currentDegree + degreesPerSection > 360 && pointDegree < currentDegree)
+                {
+                    pointDegree += 360;
+                }
+                else if (currentDegree < 0 && pointDegree > currentDegree + degreesPerSection)
+                {
+                    pointDegree -= 360;
+                }
+                //Debug.Log($"{currentSection}: {currentDegree} <= {pointDegree} <= {currentDegree + degreesPerSection}");
                 if (pointDegree >= currentDegree && pointDegree <= currentDegree + degreesPerSection)
                 {
                     return currentSection + 1;
                 }
+                currentDegree += degreesPerSection;
             }
 
             return -1;
