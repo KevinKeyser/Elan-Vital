@@ -25,7 +25,8 @@ namespace ElanVital.DynamicAnimation
             if (!IsFinished)
             {
                 // move towards the given position from the target's position at a given speed
-                Target.position = Vector3.MoveTowards(Target.position, animationPath[currentIndex], Speed);
+                float movement = Speed * Time.deltaTime;
+                Target.position = Vector3.MoveTowards(Target.position, animationPath[currentIndex], movement);
 
                 if (Vector3.Distance(Target.position, animationPath[currentIndex]) < 0.1f)
                 {
