@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InputManagerScript : MonoBehaviour
+public class InputManager : MonoBehaviour
 {
     private enum XboxMode
     {
@@ -13,7 +13,7 @@ public class InputManagerScript : MonoBehaviour
     }
 
     public bool Debug = false;
-
+    public Text DebugText;
     private const int scale = 250;
 
     #region Xbox_Fields
@@ -51,41 +51,38 @@ public class InputManagerScript : MonoBehaviour
     private float vive_rightGrip;
     #endregion
 
+    #region Objects
     [SerializeField]
-    public Transform leftController;
+    private Transform leftController;
     [SerializeField]
-    public Transform rightController;
-    [SerializeField]
-    private Transform simulatorLeft;
-    [SerializeField]
-    private Transform simulatorRight;
-    [SerializeField]
-    private GameObject viveTrackers;
-    [SerializeField]
-    private GameObject viveControllers;
+    private Transform rightController;
     [SerializeField]
     private GameObject mainCamera;
-    [SerializeField]
-    private GameObject backupCamera;
+    #endregion
 
-    // Do the local positions move if the controller is held still and the head moves?
-    //x: (-1,0)
-    //y: (0, 2)
-    //z: (0, 1)
+    public Transform Player;
+
     public Vector3 LeftPosition
     {
         get
         {
             if (HasVive)
             {
-                return leftController.localPosition;
+                Vector3 local;
+                if (Player)
+                {
+                    local = Player.InverseTransformPoint(leftController.transform.position);
+                    local.Normalize();
+                    return local;
+                }
+
+                local = mainCamera.transform.InverseTransformPoint(leftController.transform.position);
+                local.Normalize();
+                return local;
             }
             else if (HasXbox && left_mode == XboxMode.Track)
             {
-                //map xbox raw to tested vive ranges
-                float x = Map(xbox_leftHorz, -1, 1, -1, 0);
-                float y = Map(xbox_leftVert, -1, 1, 0, 2);
-                return new Vector3(x, y, 0);
+                return new Vector3(xbox_leftHorz, xbox_leftVert, 0);
             }
             return Vector3.zero;
         }
@@ -96,14 +93,20 @@ public class InputManagerScript : MonoBehaviour
         {
             if (HasVive)
             {
-                return rightController.localPosition;
+                Vector3 local;
+                if (Player)
+                {
+                    local = Player.InverseTransformPoint(leftController.transform.position);
+                    local.Normalize();
+                    return local;
+                }
+                local = mainCamera.transform.InverseTransformPoint(leftController.transform.position);
+                local.Normalize();
+                return local;
             }
             else if (HasXbox && right_mode == XboxMode.Track)
             {
-                //map xbox raw to tested vive ranges
-                float x = Map(xbox_rightHorz, -1, 1, -1, 0);
-                float y = Map(xbox_rightVert, -1, 1, 0, 2);
-                return new Vector3(x, y, 0);
+                return new Vector3(xbox_rightHorz, xbox_rightVert, 0);
             }
             return Vector3.zero;
         }
@@ -118,6 +121,7 @@ public class InputManagerScript : MonoBehaviour
     public bool HasXbox { get; private set; }
     public bool HasVive { get; private set; }
 
+    #region Common_Properties
     public float LeftTrigger
     {
         get
@@ -231,6 +235,7 @@ public class InputManagerScript : MonoBehaviour
             return Vector2.zero;
         }
     }
+    #endregion
 
     private void Start()
     {
@@ -239,10 +244,6 @@ public class InputManagerScript : MonoBehaviour
         CheckControllers();
         if (!HasVive)
         {
-            viveTrackers.SetActive(false);
-            viveControllers.SetActive(false);
-            mainCamera.SetActive(false);
-            backupCamera.SetActive(true);
             Debug = true;
         }
     }
@@ -298,15 +299,11 @@ public class InputManagerScript : MonoBehaviour
                         break;
                 }
             }
+        }
 
-            if (left_mode == XboxMode.Track)
-            {
-                simulatorLeft.localPosition = new Vector3(xbox_leftHorz, xbox_leftVert, 0) * scale;
-            }
-            if (right_mode == XboxMode.Track)
-            {
-                simulatorRight.localPosition = new Vector3(xbox_rightHorz, xbox_rightVert, 0) * scale;
-            }
+        if (Debug && DebugText)
+        {
+            DebugText.text = DebugString();
         }
     }
 
@@ -319,9 +316,8 @@ public class InputManagerScript : MonoBehaviour
             if (name.Contains("Xbox One"))
             {
                 HasXbox = true;
-                continue;
             }
-            if (name.Contains("Vive"))
+            else if (name.Contains("Vive"))
             {
                 HasVive = true;
             }
@@ -364,10 +360,8 @@ public class InputManagerScript : MonoBehaviour
         vive_rightGrip = Input.GetAxis("HTC_VIU_RightGrip");
     }
 
-    public void OnGUI()
+    private string DebugString()
     {
-        if (!Debug) return;
-
         string joyNames = "";
         foreach (var name in Input.GetJoystickNames())
         {
@@ -399,10 +393,7 @@ public class InputManagerScript : MonoBehaviour
             $"\nLeftHorz: {LeftHorizontal}, RightHorz: {RightHorizontal}" +
             $"\nLeftVert: {LeftVertical}, RightVert: {RightVertical}";
 
-
-
-
-        GUI.Label(new Rect(0, 0, 500, 500), joyNames + boolChecks + mode + genericInputs);
+        return joyNames + boolChecks + mode + genericInputs;
     }
 
     private float Map(float value, float oldMin, float oldMax, float newMin, float newMax)

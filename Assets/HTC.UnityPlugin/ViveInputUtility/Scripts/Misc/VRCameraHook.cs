@@ -43,7 +43,7 @@ namespace HTC.UnityPlugin.Vive
                     }
                     if (GetComponent<VivePoseTracker>() == null)
                     {
-                        gameObject.AddComponent<VivePoseTracker>().viveRole.SetEx(DeviceRole.Hmd);
+                        gameObject.AddComponent<VivePoseTracker>().viveRole.SetEzx(DeviceRole.Hmd);
                     }
                     break;
 #endif
