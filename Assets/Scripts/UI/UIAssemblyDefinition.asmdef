@@ -1,6 +1,8 @@
 {
     "name": "ElanVital.UI",
-    "references": [],
+    "references": [
+        "ElanVital.InputManager"
+    ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
