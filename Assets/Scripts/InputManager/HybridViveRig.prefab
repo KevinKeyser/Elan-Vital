@@ -915,7 +915,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4559521546958450}
-  - component: {fileID: 114527769160078880}
   m_Layer: 0
   m_Name: HybridViveRig
   m_TagString: Untagged
@@ -3646,23 +3645,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: 1.5
   gravity: {x: 0, y: -1, z: 0}
---- !u!114 &114527769160078880
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1649635369873428}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a4e3c6a5ebfe7d4eaa264462f512073, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Debug: 0
-  DebugText: {fileID: 114743681054999926}
-  leftController: {fileID: 4664495283992650}
-  rightController: {fileID: 4338998012604650}
-  mainCamera: {fileID: 1682726877028752}
-  Player: {fileID: 0}
 --- !u!114 &114553501595017414
 MonoBehaviour:
   m_ObjectHideFlags: 1

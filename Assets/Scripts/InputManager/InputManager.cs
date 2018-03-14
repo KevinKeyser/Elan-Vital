@@ -12,6 +12,9 @@ public class InputManager : MonoBehaviour
         Raw
     }
 
+    private static InputManager _instance;
+    public static InputManager Instance { get { return _instance; } }
+
     public bool Debug = false;
     public Text DebugText;
     private const int scale = 250;
@@ -236,6 +239,20 @@ public class InputManager : MonoBehaviour
         }
     }
     #endregion
+
+
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+    }
 
     private void Start()
     {
