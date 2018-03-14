@@ -12,8 +12,10 @@ public class InputManagerScript : MonoBehaviour
 
 
     public bool Debug = false;
-    public Vector2[] LeftTrail { get; private set; }
-    public Vector2[] RightTrail { get; private set; }
+
+    //What Isaac needs
+    public Vector3[] LeftTrail { get; private set; }
+    public Vector3[] RightTrail { get; private set; }
     public bool HasXbox { get; private set; }
     public bool HasVive { get; private set; }
 
