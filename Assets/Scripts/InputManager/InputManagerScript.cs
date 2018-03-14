@@ -5,48 +5,40 @@ using UnityEngine.UI;
 
 public class InputManagerScript : MonoBehaviour
 {
-
-    //Get Controller locations from object
-    // LeftLocation
-    // RightLocation
-
+    private enum XboxMode
+    {
+        Pad,
+        Track,
+        Raw
+    }
 
     public bool Debug = false;
 
-    //What Isaac needs
-    public Vector3[] LeftTrail { get; private set; }
-    public Vector3[] RightTrail { get; private set; }
-    public bool HasXbox { get; private set; }
-    public bool HasVive { get; private set; }
-
-    public float LeftTrigger { get; private set; }
-    public float RightTrigger { get; private set; }
-    public float LeftHorizontal { get; private set; }
-    public float RightHorizontal { get; private set; }
-    public float LeftVertical { get; private set; }
-    public float RightVertical { get; private set; }
-
-    //Xbox Input
-    private float hAxis;
-    private float vAxis;
-    private float htAxis;
-    private float vtAxis;
-    private float ltaxis;
-    private float rtaxis;
-    private float dhaxis;
-    private float dvaxis;
+    #region Xbox_Fields
+    private float xbox_leftHorz;
+    private float xbox_leftVert;
+    private float xbox_rightHorz;
+    private float xbox_rightVert;
+    private float xbox_leftTrigger;
+    private float xbox_rightTrigger;
+    private float xbox_dpadHorz;
+    private float xbox_dpadVert;
     private bool xbox_a;
     private bool xbox_b;
     private bool xbox_x;
     private bool xbox_y;
-    private bool xbox_lb;
-    private bool xbox_rb;
-    private bool xbox_ls;
-    private bool xbox_rs;
+    private bool xbox_leftBumper;
+    private bool xbox_rightBumper;
+    private bool xbox_leftStick;
+    private bool xbox_rightStick;
     private bool xbox_view;
     private bool xbox_menu;
+    #endregion
 
-    //Vive Input
+    private XboxMode left_mode;
+    private XboxMode right_mode;
+
+    #region Vive_Fields
     private float vive_leftHorz;
     private float vive_leftVert;
     private float vive_rightHorz;
@@ -55,17 +47,185 @@ public class InputManagerScript : MonoBehaviour
     private float vive_rightTrigger;
     private float vive_leftGrip;
     private float vive_rightGrip;
+    #endregion
+
+    [SerializeField]
+    public Transform leftController;
+    [SerializeField]
+    public Transform rightController;
+    [SerializeField]
+    private Transform simulatorLeft;
+    [SerializeField]
+    private Transform simulatorRight;
+    [SerializeField]
+    private GameObject viveTrackers;
+    [SerializeField]
+    private GameObject viveControllers;
+    [SerializeField]
+    private GameObject mainCamera;
+    [SerializeField]
+    private GameObject backupCamera;
+
+    public Vector3 LeftPosition
+    {
+        get
+        {
+            if (HasVive)
+            {
+                return leftController.position;
+            }
+            else if (HasXbox && left_mode == XboxMode.Track)
+            {
+                return simulatorLeft.position;
+            }
+            return Vector3.zero;
+        }
+    }
+    public Vector3 RightPosition
+    {
+        get
+        {
+            if (HasVive)
+            {
+                return rightController.position;
+            }
+            else if (HasXbox && right_mode == XboxMode.Track)
+            {
+                return simulatorRight.position;
+            }
+            return Vector3.zero;
+        }
+    }
+
+    public Vector3 PreviousLeftPosition { get; private set; }
+    public Vector3 PreviousRightPosition { get; private set; }
+
+    public bool HasXbox { get; private set; }
+    public bool HasVive { get; private set; }
+
+    public float LeftTrigger
+    {
+        get
+        {
+            if (HasVive)
+            {
+                return vive_leftTrigger;
+            }
+            else if (HasXbox)
+            {
+                return xbox_leftTrigger;
+            }
+            return 0;
+        }
+    }
+    public float RightTrigger
+    {
+        get
+        {
+            if (HasVive)
+            {
+                return vive_rightTrigger;
+            }
+            else if (HasXbox)
+            {
+                return xbox_rightTrigger;
+            }
+            return 0;
+        }
+    }
+    public float LeftHorizontal
+    {
+        get
+        {
+            if (HasVive)
+            {
+                return vive_leftHorz;
+            }
+            else if (HasXbox)
+            {
+                return xbox_leftHorz;
+            }
+            return 0;
+        }
+    }
+    public float RightHorizontal
+    {
+        get
+        {
+            if (HasVive)
+            {
+                return vive_rightHorz;
+            }
+            else if (HasXbox)
+            {
+                return xbox_rightHorz;
+            }
+            return 0;
+        }
+    }
+    public float LeftVertical
+    {
+        get
+        {
+            if (HasVive)
+            {
+                return vive_leftVert;
+            }
+            else if (HasXbox)
+            {
+                return xbox_leftVert;
+            }
+            return 0;
+        }
+    }
+    public float RightVertical
+    {
+        get
+        {
+            if (HasVive)
+            {
+                return vive_rightHorz;
+            }
+            else if (HasXbox)
+            {
+                return xbox_rightVert;
+            }
+            return 0;
+        }
+    }
 
     private void Start()
     {
+        left_mode = XboxMode.Pad;
+        right_mode = XboxMode.Pad;
         CheckControllers();
+        if (!HasVive)
+        {
+            viveTrackers.SetActive(false);
+            viveControllers.SetActive(false);
+            mainCamera.SetActive(false);
+            backupCamera.SetActive(true);
+            Debug = true;
+        }
     }
 
     void Update()
     {
         CheckControllers();
         if (HasVive) ReadViveInput();
-        if (HasXbox) ReadXboxInput();
+        if (HasXbox)
+        {
+            ReadXboxInput();
+            //test for range of movement with vive controllers
+            //click to change xbox mode
+            //move & show points if mode in track
+        }
+    }
+
+    private void LateUpdate()
+    {
+        PreviousLeftPosition = LeftPosition;
+        PreviousRightPosition = RightPosition;
     }
 
     private void CheckControllers()
@@ -88,24 +248,24 @@ public class InputManagerScript : MonoBehaviour
 
     private void ReadXboxInput()
     {
-        hAxis = Input.GetAxis("Horizontal");
-        vAxis = Input.GetAxis("Vertical");
-        htAxis = Input.GetAxis("HorizontalTurn");
-        vtAxis = Input.GetAxis("VerticalTurn");
+        xbox_leftHorz = Input.GetAxis("Horizontal");
+        xbox_leftVert = Input.GetAxis("Vertical");
+        xbox_rightHorz = Input.GetAxis("HorizontalTurn");
+        xbox_rightVert = Input.GetAxis("VerticalTurn");
 
-        ltaxis = Input.GetAxis("XboxLeftTrigger");
-        rtaxis = Input.GetAxis("XboxRightTrigger");
-        dhaxis = Input.GetAxis("XboxDpadHorizontal");
-        dvaxis = Input.GetAxis("XboxDpadVertical");
+        xbox_leftTrigger = Input.GetAxis("XboxLeftTrigger");
+        xbox_rightTrigger = Input.GetAxis("XboxRightTrigger");
+        xbox_dpadHorz = Input.GetAxis("XboxDpadHorizontal");
+        xbox_dpadVert = Input.GetAxis("XboxDpadVertical");
 
         xbox_a = Input.GetButton("XboxA");
         xbox_b = Input.GetButton("XboxB");
         xbox_x = Input.GetButton("XboxX");
         xbox_y = Input.GetButton("XboxY");
-        xbox_lb = Input.GetButton("XboxLB");
-        xbox_rb = Input.GetButton("XboxRB");
-        xbox_ls = Input.GetButton("XboxLS");
-        xbox_rs = Input.GetButton("XboxRS");
+        xbox_leftBumper = Input.GetButton("XboxLB");
+        xbox_rightBumper = Input.GetButton("XboxRB");
+        xbox_leftStick = Input.GetButton("XboxLS");
+        xbox_rightStick = Input.GetButton("XboxRS");
         xbox_view = Input.GetButton("XboxView");
         xbox_menu = Input.GetButton("XboxMenu");
     }
@@ -135,13 +295,13 @@ public class InputManagerScript : MonoBehaviour
                 "LB: {6} RB: {7} LS: {8} RS:{9}\n" +
                 "View: {10} Menu: {11}\n" +
                 "Dpad-H: {12:0.000} Dpad-V: {13:0.000}\n",
-                ltaxis, rtaxis,
+                xbox_leftTrigger, xbox_rightTrigger,
                 xbox_a, xbox_b, xbox_x, xbox_y,
-                xbox_lb, xbox_rb, xbox_ls, xbox_rs,
+                xbox_leftBumper, xbox_rightBumper, xbox_leftStick, xbox_rightStick,
                 xbox_view, xbox_menu,
-                dhaxis, dvaxis,
-                hAxis, vAxis,
-                htAxis, vtAxis);
+                xbox_dpadHorz, xbox_dpadVert,
+                xbox_leftHorz, xbox_leftVert,
+                xbox_rightHorz, xbox_rightVert);
 
         string textVive =
             string.Format(
@@ -165,6 +325,8 @@ public class InputManagerScript : MonoBehaviour
         if (HasVive) boolChecks += "HasVive\n";
         if (HasXbox) boolChecks += "HasXbox\n";
 
-        GUI.Label(new Rect(0, 0, 500, 500), textXbox + textVive + joyNames + boolChecks);
+        string controllerPositions = $"\nLeft: {LeftPosition}, Right: {RightPosition}";
+
+        GUI.Label(new Rect(0, 0, 500, 500), textXbox + textVive + joyNames + boolChecks + controllerPositions);
     }
 }
