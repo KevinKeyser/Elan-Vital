@@ -99,11 +99,11 @@ public class InputManager : MonoBehaviour
                 Vector3 local;
                 if (Player)
                 {
-                    local = Player.InverseTransformPoint(leftController.transform.position);
+                    local = Player.InverseTransformPoint(rightController.transform.position);
                     local.Normalize();
                     return local;
                 }
-                local = mainCamera.transform.InverseTransformPoint(leftController.transform.position);
+                local = mainCamera.transform.InverseTransformPoint(rightController.transform.position);
                 local.Normalize();
                 return local;
             }
