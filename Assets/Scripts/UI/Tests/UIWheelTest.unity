@@ -202,8 +202,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1355010610}
-  - component: {fileID: 1355010612}
   - component: {fileID: 1355010611}
+  - component: {fileID: 1355010612}
   m_Layer: 5
   m_Name: GameObject
   m_TagString: Untagged
@@ -227,7 +227,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 118, y: 118}
+  m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1355010611
 CanvasRenderer:
@@ -247,14 +247,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.01886791, g: 0.0004449978, b: 0.0004449978, a: 1}
   m_RaycastTarget: 1
-  DegreeOffset: 90
-  Radius: 42
-  Thickness: 17
-  SectionCount: 3
-  Padding: 10
-  Detail: 34
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  DegreeOffset: -92
+  Radius: 14
+  Thickness: 14
+  Padding: 12
+  InnerPadding: 12
+  Detail: 90
+  SectionCount: 5
+  SectionColors:
+  - {r: 0.01886791, g: 0.0004449978, b: 0.0004449978, a: 1}
+  - {r: 0.01886791, g: 0.0004449978, b: 0.0004449978, a: 1}
+  - {r: 0.01886791, g: 0.0004449978, b: 0.0004449978, a: 1}
+  - {r: 0.01886791, g: 0.0004449978, b: 0.0004449978, a: 1}
+  - {r: 0.01886791, g: 0.0004449978, b: 0.0004449978, a: 1}
+  - {r: 0.01886791, g: 0.0004449978, b: 0.0004449978, a: 1}
+  - {r: 0.01886791, g: 0.0004449978, b: 0.0004449978, a: 1}
 --- !u!1 &1474346255
 GameObject:
   m_ObjectHideFlags: 0
