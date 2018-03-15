@@ -6,7 +6,7 @@ namespace ElanVital.DynamicAnimation
 {
     public class Bone : MonoBehaviour
     {
-        private new Rigidbody rigidbody;
+        public new Rigidbody rigidbody;
         public Quaternion OffsetRotation;
         public Vector3 euler;
 
@@ -28,9 +28,7 @@ namespace ElanVital.DynamicAnimation
         }
 
         public Transform Target;
-
-        private Rigidbody rb;
-
+        
         [SerializeField] private List<Bone> childBones;
 
         public List<Bone> ChildBones
