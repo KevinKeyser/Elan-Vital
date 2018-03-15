@@ -10,8 +10,8 @@ namespace ElanVital.UI
 {
     public class UILineRenderer : Graphic
     {
-        [Range(10, 250)]
-        [SerializeField] public int MaxPoints = 100;
+        [Range(1, 250)]
+        [SerializeField] public int MaxPoints = 10;
 
         public float LineThickness = 1;
         [SerializeField]
