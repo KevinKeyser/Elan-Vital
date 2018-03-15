@@ -1,6 +1,8 @@
 {
     "name": "ElanVital.Combat",
-    "references": [],
+    "references": [
+        "ElanVital.DynamicAnimation"
+    ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
