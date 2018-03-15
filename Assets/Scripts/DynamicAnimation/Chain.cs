@@ -103,14 +103,13 @@ namespace ElanVital.DynamicAnimation
             {
                 if (index == ChildBones.Count - 1)
                 {
-                    ChildBones[index].transform.LookAt(Target.position);
-                    ChildBones[index].transform.rotation *= OffsetRotation;
+                    ChildBones[index].SetRotation(Quaternion.LookRotation(Target.position - finalPositions[index]) * Quaternion.Euler(-90, 0, 0));
+                    //ChildBones[index].transform.rotation *= OffsetRotation;
                 }
                 else
                 {
-                    ChildBones[index].transform.LookAt(finalPositions[index + 1]);
-                    ChildBones[index].transform.rotation *= Quaternion.Inverse(Quaternion.Euler(ChildBones[index].euler));
-                    ChildBones[index + 1].transform.position = finalPositions[index + 1];
+                    ChildBones[index].SetRotation(Quaternion.LookRotation(finalPositions[index + 1] - finalPositions[index]) * Quaternion.Euler(-90, 0, 0));
+                    ChildBones[index + 1].SetPosition(finalPositions[index + 1]);
                     //     ChildBones[index].transform.LookAt(ChildBones[index + 1].transform);
                 }
 

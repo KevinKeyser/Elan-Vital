@@ -6,6 +6,7 @@ namespace ElanVital.DynamicAnimation
 {
     public class Bone : MonoBehaviour
     {
+        private new Rigidbody rigidbody;
         public Quaternion OffsetRotation;
         public Vector3 euler;
 
@@ -64,17 +65,43 @@ namespace ElanVital.DynamicAnimation
         // Use this for initialization
         void Start()
         {
+            rigidbody = GetComponent<Rigidbody>();
             OffsetRotation = transform.rotation;
             if (ChildBones.Count > 0)
             {
                 Length = Vector3.Distance(transform.position, ChildBones[0].transform.position);
-                OffsetRotation = transform.rotation;
-                euler = OffsetRotation.eulerAngles;
+                //OffsetRotation = transform.rotation * Quaternion.Euler(45, 0, 0);
+                //euler = OffsetRotation.eulerAngles;
             }
             else
             {
                 Length = 0;
             }
+        }
+
+        public void SetPosition(Vector3 position)
+        {
+            if (rigidbody)
+            {
+                rigidbody.MovePosition(position);
+            }
+            else
+            {
+                transform.position = position;
+            }
+        }
+
+        public void SetRotation(Quaternion rotation)
+        {
+            if (rigidbody)
+            {
+                rigidbody.MoveRotation(rotation);
+            }
+            else
+            {
+                transform.rotation = rotation;
+            }
+
         }
     }
 }
