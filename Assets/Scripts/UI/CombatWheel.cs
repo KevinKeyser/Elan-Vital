@@ -17,17 +17,18 @@ namespace ElanVital.UI
         [Range(0, 50)] public int InnerPadding = 0;
         [Range(10, 100)] public int Detail = 10;
 
-        [SerializeField]
+        
         [Range(1, 10)]
-        private int SectionCount = 1;
-        [SerializeField]
-        private Color[] sectionColors;
+        public int SectionCount = 1;
+        
+        public Color[] sectionColors;
 
 
 
         public void SetSectionColor(int sectionNumber, Color newColor)
         {
             sectionColors[sectionNumber] = newColor;
+            SetVerticesDirty();
         }
 
         public int SectionContains(Vector2 point)
@@ -53,7 +54,7 @@ namespace ElanVital.UI
             {
                 pointDegree += 360;
             }
-            Debug.Log(pointDegree);
+            //Debug.Log(pointDegree);
             for (int currentSection = 0; currentSection < SectionCount; currentSection++)
             {
                 if (currentDegree + degreesPerSection > 360 && pointDegree < currentDegree)
