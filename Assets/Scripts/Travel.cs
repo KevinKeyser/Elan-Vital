@@ -8,6 +8,7 @@ public class Travel : MonoBehaviour
     public float Speed;
     private List<Transform> points;
     private int target = 0;
+    private Rigidbody body;
 
     // Use this for initialization
     void Start()
@@ -17,18 +18,22 @@ public class Travel : MonoBehaviour
         {
             points.Add(child);
         }
+        body = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        float step = Speed * Time.deltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, points[target].position, step);
-
-        if (Vector3.Distance(transform.position, points[target].position) < 1)
+        if (body)
         {
-            target++;
-            if (target >= points.Count) target = 0;
+            float step = Speed * Time.deltaTime;
+            body.position = Vector3.MoveTowards(transform.position, points[target].position, step);
+
+            if (Vector3.Distance(transform.position, points[target].position) < 1)
+            {
+                target++;
+                if (target >= points.Count) target = 0;
+            }
         }
     }
 }

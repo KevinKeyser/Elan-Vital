@@ -1709,6 +1709,16 @@ Prefab:
       propertyPath: m_Name
       value: DeviceTrackerLeft
       objectReference: {fileID: 0}
+    - target: {fileID: 114911695217802140, guid: 0d7649fcb4e7a9c4596131bad1493d42,
+        type: 2}
+      propertyPath: inputManager
+      value: 
+      objectReference: {fileID: 914038146}
+    - target: {fileID: 114875597844426154, guid: 0d7649fcb4e7a9c4596131bad1493d42,
+        type: 2}
+      propertyPath: inputManager
+      value: 
+      objectReference: {fileID: 914038146}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0d7649fcb4e7a9c4596131bad1493d42, type: 2}
   m_IsPrefabParent: 0
