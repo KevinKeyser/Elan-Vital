@@ -109,7 +109,7 @@ namespace ElanVital.DynamicAnimation
                 else
                 {
                     ChildBones[index].transform.LookAt(finalPositions[index + 1]);
-                    ChildBones[index].transform.rotation *= Quaternion.Inverse(Quaternion.Euler(ChildBones[index].euler));
+                    ChildBones[index].transform.rotation *= Quaternion.Euler(-90, 0, 0);//Quaternion.Inverse(Quaternion.Euler(ChildBones[index].euler)));
                     ChildBones[index + 1].transform.position = finalPositions[index + 1];
                     //     ChildBones[index].transform.LookAt(ChildBones[index + 1].transform);
                 }

@@ -68,8 +68,8 @@ namespace ElanVital.DynamicAnimation
             if (ChildBones.Count > 0)
             {
                 Length = Vector3.Distance(transform.position, ChildBones[0].transform.position);
-                OffsetRotation = transform.rotation;
-                euler = OffsetRotation.eulerAngles;
+                //OffsetRotation = transform.rotation * Quaternion.Euler(45, 0, 0);
+                //euler = OffsetRotation.eulerAngles;
             }
             else
             {
